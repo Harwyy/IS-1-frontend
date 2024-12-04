@@ -1,47 +1,81 @@
 .menu-container {
-    width: 250px;
-    height: 100vh;
-    background: linear-gradient(45deg, #1f1f1f, #343434);
-    color: #fff;
+    background: #d0f1d0;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 40px;
+    font-family: 'Roboto', sans-serif;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    padding: 20px;
-    box-sizing: border-box;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .menu-header {
+    color: #2e8b57;
+    font-size: 30px;
+    margin-bottom: 25px;
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 30px;
 }
 
 .menu-nav ul {
     list-style: none;
     padding: 0;
+    margin: 0;
+    width: 100%;
 }
 
 .menu-item {
     display: block;
-    padding: 10px;
+    padding: 14px;
     margin: 10px 0;
-    background-color: #444;
-    color: #fff;
+    background-color: #2e8b57;
+    color: white;
+    font-size: 16px;
     text-decoration: none;
-    border-radius: 5px;
     text-align: center;
-    transition: background-color 0.3s ease;
+    border-radius: 10px;
+    transition: all 0.3s ease;
 }
 
 .menu-item:hover {
-    background-color: #666;
+    background-color: #267b46;
+    transform: scale(1.05);
 }
 
 .logout-btn {
     background-color: #f44336;
+    color: white;
     border: none;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    padding: 16px 0;
+    font-size: 18px;
+    border-radius: 10px;
+    width: 100%;
+    text-align: center;
 }
 
 .logout-btn:hover {
     background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+    .menu-container {
+        width: 90%;
+        padding: 25px;
+        margin: 30px auto;
+    }
+
+    .menu-header {
+        font-size: 24px;
+    }
+
+    .menu-item {
+        font-size: 14px;
+    }
 }

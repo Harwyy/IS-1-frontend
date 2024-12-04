@@ -1,26 +1,26 @@
-/* General Layout */
 .auth-form {
-    background-color: #f5f8f7;
-    border-radius: 10px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    max-width: 450px;
+    background: #d0f1d0;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
     margin: 50px auto;
-    padding: 30px;
+    padding: 40px;
     font-family: 'Roboto', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Heading */
 .auth-form h2 {
     color: #2e8b57;
-    font-size: 28px;
-    margin-bottom: 20px;
-    font-weight: 600;
+    font-size: 30px;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
 }
 
-/* Form Groups */
 .form-group {
     width: 100%;
     margin-bottom: 20px;
@@ -31,71 +31,83 @@
     color: #2e8b57;
     display: block;
     margin-bottom: 8px;
+    font-weight: 500;
 }
 
-/* Input Fields */
 .form-group input,
 .form-group select {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    border-radius: 10px;
+    border: 1px solid #ddd;
     box-sizing: border-box;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    color: #333;
 }
 
 .form-group input:focus,
 .form-group select:focus {
     border-color: #2e8b57;
-    background-color: #e8f6ec;
+    background-color: #f0fff4;
+    box-shadow: 0 0 10px rgba(46, 139, 87, 0.2);
 }
 
-/* Submit Button */
 button[type="submit"] {
     background-color: #2e8b57;
     color: white;
-    padding: 14px 0;
+    padding: 16px 0;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 18px;
     width: 100%;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 button[type="submit"]:hover {
     background-color: #267b46;
+    transform: scale(1.05);
 }
 
-/* Error Message */
 .error {
-    color: #ff4c4c;
+    color: #f44336;
     font-size: 14px;
     text-align: center;
     margin-bottom: 15px;
 }
 
-/* Toggle Button */
 .toggle-button {
     background: none;
     border: none;
     color: #2e8b57;
     font-size: 16px;
-    margin-top: 15px;
+    margin-top: 20px;
     cursor: pointer;
+    transition: color 0.3s ease;
+    text-decoration: underline;
 }
 
 .toggle-button:hover {
     color: #267b46;
 }
 
-/* Responsive Styling for Mobile */
+.success {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+}
+
+
 @media (max-width: 480px) {
     .auth-form {
         width: 90%;
-        margin: 20px auto;
+        padding: 25px;
+        margin: 30px auto;
     }
 
     .auth-form h2 {
