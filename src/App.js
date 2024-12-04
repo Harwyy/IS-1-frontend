@@ -8,7 +8,7 @@ import {useEffect} from "react";
 import Menu from "./pages/Menu";
 import UserInfo from "./components/userInfo/UserInfo";
 import Coordinates from "./components/coordinatesForm/Coordinates";
-// import Location from "./components/locationsForm/Location";
+import Location from "./components/locationForm/Location";
 
 export default function App() {
 
@@ -57,15 +57,15 @@ export default function App() {
                     }
                 />
 
-                {/*<Route*/}
-                {/*    path="/location"*/}
-                {/*    element={*/}
-                {/*        <ProtectedRoute isAuthenticated={isAuthenticated}>*/}
-                {/*            <UserInfo/>*/}
-                {/*            <Location />*/}
-                {/*        </ProtectedRoute>*/}
-                {/*    }*/}
-                {/*/>*/}
+                <Route
+                    path="/location"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <UserInfo/>
+                            <Location />
+                        </ProtectedRoute>
+                    }
+                />
 
                 <Route
                     path="/*"

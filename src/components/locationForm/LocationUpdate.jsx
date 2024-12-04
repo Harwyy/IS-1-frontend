@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { PORT } from "../../config/config";
 
-const CoordinatesUpdate = ({ onClose, coordinate }) => {
+const LocationUpdate = ({ onClose, location }) => {
     const [form, setForm] = useState({
-        id: coordinate?.id || "",
-        x: coordinate?.x || "",
-        y: coordinate?.y || "",
-        updateable: coordinate?.updateable || false,
+        id: location?.id || "",
+        name: location?.name || "",
+        coordinateX: location?.coordinateX || "",
+        coordinateY: location?.coordinateY || "",
+        coordinateZ: location?.coordinateZ || null,
+        updateable: location?.updateable || false,
     });
     const [errors, setErrors] = useState({});
     const [responseMessage, setResponseMessage] = useState("");
@@ -18,23 +20,23 @@ const CoordinatesUpdate = ({ onClose, coordinate }) => {
         const checkOwnership = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:${PORT}/api/v1/coordinates/my`, {
+                    `http://localhost:${PORT}/api/v1/locations/my`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": localStorage.getItem("Authorization"),
+                        Authorization: localStorage.getItem("Authorization"),
                     },
                 });
 
                 if (response.ok) {
-                    const coordinates = await response.json();
-                    const coordinateExists = coordinates.some(
-                        (coord) => coord.id === coordinate.id
+                    const locations = await response.json();
+                    const locationExists = locations.some(
+                        (loc) => loc.id === location.id
                     );
 
-                    setIsOwned(coordinateExists);
+                    setIsOwned(locationExists);
                 } else {
-                    setErrors("Failed to fetch your coordinates.");
+                    setErrors("Failed to fetch your locations.");
                 }
             } catch (error) {
                 setErrors("Error checking ownership. Please try again later.");
@@ -44,31 +46,40 @@ const CoordinatesUpdate = ({ onClose, coordinate }) => {
         };
 
         checkOwnership();
-    }, [coordinate]);
+    }, [location]);
 
     useEffect(() => {
-        if (coordinate) {
+        if (location) {
             setForm({
-                id: coordinate.id,
-                x: coordinate.x,
-                y: coordinate.y,
-                updateable: coordinate.updateable,
+                id: location.id,
+                name: location.name,
+                coordinateX: location.coordinateX,
+                coordinateY: location.coordinateY,
+                coordinateZ: location.coordinateZ,
+                updateable: location.updateable,
             });
         }
-    }, [coordinate]);
+    }, [location]);
 
     const validateForm = () => {
         const newErrors = {};
-        if (form.x.length === 0 && isNaN(form.x)) {
-            newErrors.x = "X must be a number or null.";
+
+        if (!form.name.trim()) {
+            newErrors.name = "Name is required.";
         }
 
-        if (form.y === "" || form.y === null) {
-            newErrors.y = "Y is required.";
-        } else if (form.y > 540) {
-            newErrors.y = "Y must not exceed 540.";
-        } else if (isNaN(form.y)) {
-            newErrors.y = "Y must be a valid number.";
+        if (form.coordinateX !== null && isNaN(form.coordinateX)) {
+            newErrors.coordinateX = "Coordinate X must be a number or null.";
+        }
+
+        if (form.coordinateY === "" || form.coordinateY === null) {
+            newErrors.coordinateY = "Coordinate Y is required.";
+        } else if (isNaN(form.coordinateY)) {
+            newErrors.coordinateY = "Coordinate Y must be a valid number.";
+        }
+
+        if (form.coordinateZ !== null && isNaN(form.coordinateZ)) {
+            newErrors.coordinateZ = "Coordinate Z must be a number or null.";
         }
 
         return newErrors;
@@ -78,11 +89,11 @@ const CoordinatesUpdate = ({ onClose, coordinate }) => {
         e.preventDefault();
 
         if (!isOwned && localStorage.getItem("Role") !== "ADMIN") {
-            setErrors("You can only update your own coordinates.");
+            setErrors("You can only update your own locations.");
             return;
         }
 
-        const url = `http://localhost:${PORT}/api/v1/coordinates`;
+        const url = `http://localhost:${PORT}/api/v1/locations`;
         const token = localStorage.getItem("Authorization");
 
         const validationErrors = validateForm();
@@ -101,17 +112,17 @@ const CoordinatesUpdate = ({ onClose, coordinate }) => {
         });
 
         if (response.ok) {
-            setResponseMessage("Coordinates updated successfully!");
+            setResponseMessage("Location updated successfully!");
             setIsSuccess(true);
         } else {
-            setResponseMessage("Error updating coordinates. Please try again.");
+            setResponseMessage("Error updating location. Please try again.");
             setIsSuccess(false);
         }
     };
 
     return (
         <div className="modal">
-            <h2>Update Coordinates</h2>
+            <h2>Update Location</h2>
             {isLoadingOwnership ? (
                 <p>Loading ownership information...</p>
             ) : (
@@ -119,23 +130,51 @@ const CoordinatesUpdate = ({ onClose, coordinate }) => {
                     <label>ID:</label>
                     <input type="text" value={form.id} disabled />
 
-                    <label>X:</label>
+                    <label>Name:</label>
                     <input
-                        type="number"
-                        value={form.x}
-                        onChange={(e) => setForm({ ...form, x: parseFloat(e.target.value) })}
+                        type="text"
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
                         disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
                     />
-                    {errors.x && <p className="error-message">{errors.x}</p>}
+                    {errors.name && <p className="error-message">{errors.name}</p>}
 
-                    <label>Y:</label>
+                    <label>Coordinate X:</label>
                     <input
                         type="number"
-                        value={form.y}
-                        onChange={(e) => setForm({ ...form, y: parseInt(e.target.value) })}
+                        value={form.coordinateX === null ? "" : form.coordinateX}
+                        onChange={(e) =>
+                            setForm({
+                                ...form,
+                                coordinateX: e.target.value === "" ? null : parseFloat(e.target.value),
+                            })
+                        }
                         disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
                     />
-                    {errors.y && <p className="error-message">{errors.y}</p>}
+                    {errors.coordinateX && <p className="error-message">{errors.coordinateX}</p>}
+
+                    <label>Coordinate Y:</label>
+                    <input
+                        type="number"
+                        value={form.coordinateY}
+                        onChange={(e) => setForm({ ...form, coordinateY: parseFloat(e.target.value) })}
+                        disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
+                    />
+                    {errors.coordinateY && <p className="error-message">{errors.coordinateY}</p>}
+
+                    <label>Coordinate Z:</label>
+                    <input
+                        type="number"
+                        value={form.coordinateZ === null ? "" : form.coordinateZ}
+                        onChange={(e) =>
+                            setForm({
+                                ...form,
+                                coordinateZ: e.target.value === "" ? null : parseFloat(e.target.value),
+                            })
+                        }
+                        disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
+                    />
+                    {errors.coordinateZ && <p className="error-message">{errors.coordinateZ}</p>}
 
                     <label>
                         Updateable:
@@ -145,6 +184,7 @@ const CoordinatesUpdate = ({ onClose, coordinate }) => {
                             onChange={(e) =>
                                 setForm({ ...form, updateable: e.target.checked })
                             }
+                            disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
                         />
                     </label>
 
@@ -176,4 +216,4 @@ const CoordinatesUpdate = ({ onClose, coordinate }) => {
     );
 };
 
-export default CoordinatesUpdate;
+export default LocationUpdate;

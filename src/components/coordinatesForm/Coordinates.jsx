@@ -24,29 +24,27 @@ const Coordinates = () => {
         <div className="coordinates-page">
             <div className="header-container">
                 <h1 className="header-title">Coordinates Management</h1>
-                <Link to="/menu" className="back-to-menu-link">Back to Menu</Link>
+                <Link to="/menu" className="back-to-menu-link">
+                    Back to Menu
+                </Link>
             </div>
-            <button onClick={() => handleOpenModal("create")} disabled={localStorage.getItem("Role") === "ADMIN"} className="create-button">
+            <button
+                onClick={() => handleOpenModal("create")}
+                disabled={localStorage.getItem("Role") === "ADMIN"}
+                className="create-button"
+            >
                 Create Coordinates
             </button>
             <CoordinatesTable
                 onEdit={(coordinate) => handleOpenModal("update", coordinate)}
                 onDelete={(coordinate) => handleOpenModal("delete", coordinate)}
             />
-            {modalType === "create" && (
-                <CoordinatesCreate onClose={handleCloseModal}/>
-            )}
+            {modalType === "create" && <CoordinatesCreate onClose={handleCloseModal}/>}
             {modalType === "update" && (
-                <CoordinatesUpdate
-                    onClose={handleCloseModal}
-                    coordinate={selectedCoordinate}
-                />
+                <CoordinatesUpdate onClose={handleCloseModal} coordinate={selectedCoordinate}/>
             )}
             {modalType === "delete" && (
-                <CoordinatesDelete
-                    onClose={handleCloseModal}
-                    coordinate={selectedCoordinate}
-                />
+                <CoordinatesDelete onClose={handleCloseModal} coordinate={selectedCoordinate}/>
             )}
         </div>
     );

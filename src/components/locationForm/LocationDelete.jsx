@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { PORT } from "../../config/config";
 
-const CoordinatesDelete = ({ onClose, coordinate }) => {
+const LocationDelete = ({ onClose, location }) => {
     const [isOwned, setIsOwned] = useState(false);
     const [isLoadingOwnership, setIsLoadingOwnership] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
@@ -10,7 +10,7 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
         const checkOwnership = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:${PORT}/api/v1/coordinates/my`, {
+                    `http://localhost:${PORT}/api/v1/locations/my`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -19,14 +19,14 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
                 });
 
                 if (response.ok) {
-                    const coordinates = await response.json();
-                    const coordinateExists = coordinates.some(
-                        (coord) => coord.id === coordinate.id
+                    const locations = await response.json();
+                    const locationExists = locations.some(
+                        (loc) => loc.id === location.id
                     );
 
-                    setIsOwned(coordinateExists);
+                    setIsOwned(locationExists);
                 } else {
-                    setErrorMessage("Failed to fetch your coordinates.");
+                    setErrorMessage("Failed to fetch your locations.");
                 }
             } catch (error) {
                 setErrorMessage("Error checking ownership. Please try again later.");
@@ -36,16 +36,16 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
         };
 
         checkOwnership();
-    }, [coordinate]);
+    }, [location]);
 
     const handleDelete = async () => {
         if (!isOwned) {
-            setErrorMessage("You can only delete your own coordinates.");
+            setErrorMessage("You can only delete your own locations.");
             return;
         }
 
         try {
-            await fetch(`http://localhost:${PORT}/api/v1/coordinates/${coordinate.id}`, {
+            await fetch(`http://localhost:${PORT}/api/v1/locations/${location.id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -55,13 +55,13 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
 
             onClose();
         } catch (error) {
-            setErrorMessage("Error deleting the coordinate. Please try again.");
+            setErrorMessage("Error deleting the location. Please try again.");
         }
     };
 
     return (
         <div className="modal">
-            <h2>Delete Coordinates</h2>
+            <h2>Delete Location</h2>
 
             {isLoadingOwnership ? (
                 <p>Loading ownership information...</p>
@@ -71,7 +71,7 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
 
                     {isOwned ? (
                         <>
-                            <p>Are you sure you want to delete the coordinate with ID {coordinate.id}?</p>
+                            <p>Are you sure you want to delete the location with ID {location.id}?</p>
                             <div className="modal-actions" style={{ marginTop: "15px" }}>
                                 <button
                                     onClick={handleDelete}
@@ -99,4 +99,4 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
     );
 };
 
-export default CoordinatesDelete;
+export default LocationDelete;

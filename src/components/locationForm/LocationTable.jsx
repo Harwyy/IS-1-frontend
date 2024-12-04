@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { PORT } from "../../config/config";
 
-const CoordinatesTable = ({ onEdit, onDelete }) => {
-    const [coordinates, setCoordinates] = useState([]);
+const LocationTable = ({ onEdit, onDelete }) => {
+    const [locations, setLocations] = useState([]);
     const [page, setPage] = useState(0);
     const [sortBy, setSortBy] = useState("id");
     const [direction, setDirection] = useState("asc");
     const [size, setSize] = useState(5);
 
     useEffect(() => {
-        fetchCoordinates();
+        fetchLocations();
         const interval = setInterval(() => {
-            fetchCoordinates();
+            fetchLocations();
         }, 1000);
         return () => clearInterval(interval);
     }, [page, sortBy, direction, size]);
 
-    useEffect(() => {
-        fetchCoordinates();
-    }, [page, sortBy, direction, size]);
-
-    const fetchCoordinates = async () => {
-        var url = `http://localhost:${PORT}/api/v1/coordinates?sortBy=${sortBy}&direction=${direction}&page=${page}&size=${size}`;
-        var token = localStorage.getItem("Authorization");
+    const fetchLocations = async () => {
+        const url = `http://localhost:${PORT}/api/v1/locations?sortBy=${sortBy}&direction=${direction}&page=${page}&size=${size}`;
+        const token = localStorage.getItem("Authorization");
         const response = await fetch(url, {
             method: "GET",
             headers: {
@@ -31,7 +27,7 @@ const CoordinatesTable = ({ onEdit, onDelete }) => {
             },
         });
         const data = await response.json();
-        setCoordinates(data);
+        setLocations(data);
     };
 
     const handleSizeChange = (e) => {
@@ -49,7 +45,7 @@ const CoordinatesTable = ({ onEdit, onDelete }) => {
     };
 
     return (
-        <div className="coordinates-table">
+        <div className="location-table">
             <div className="controls">
                 <label className="control-size-label">
                     Rows per page:
@@ -68,47 +64,57 @@ const CoordinatesTable = ({ onEdit, onDelete }) => {
                     <th onClick={() => handleSort("id")}>
                         ID {sortBy === "id" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th onClick={() => handleSort("X")}>
-                        X {sortBy === "X" && direction === "asc" ? "↑" : "↓"}
+                    <th onClick={() => handleSort("name")}>
+                        Name {sortBy === "name" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th onClick={() => handleSort("Y")}>
-                        Y {sortBy === "Y" && direction === "asc" ? "↑" : "↓"}
+                    <th onClick={() => handleSort("coordinateX")}>
+                        X {sortBy === "coordinateX" && direction === "asc" ? "↑" : "↓"}
+                    </th>
+                    <th onClick={() => handleSort("coordinateY")}>
+                        Y {sortBy === "coordinateY" && direction === "asc" ? "↑" : "↓"}
+                    </th>
+                    <th onClick={() => handleSort("coordinateZ")}>
+                        Z {sortBy === "coordinateZ" && direction === "asc" ? "↑" : "↓"}
                     </th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {coordinates.length > 0 ? (
-                    coordinates.map((coord) => (
-                        <tr key={coord.id}>
-                            <td>{coord.id}</td>
-                            <td>{coord.x}</td>
-                            <td>{coord.y}</td>
+                {locations.length > 0 ? (
+                    locations.map((location) => (
+                        <tr key={location.id}>
+                            <td>{location.id}</td>
+                            <td>{location.name}</td>
+                            <td>{location.coordinateX}</td>
+                            <td>{location.coordinateY}</td>
+                            <td>{location.coordinateZ || "N/A"}</td>
                             <td>
-                                <button className="update-delete-button"
-                                        disabled={!coord.updateable && localStorage.getItem("Role") === "ADMIN"}
-                                        onClick={() => onEdit(coord)}
+                                <button
+                                    className="update-delete-button"
+                                    disabled={!location.updateable && localStorage.getItem("Role") === "ADMIN"}
+                                    onClick={() => onEdit(location)}
                                 >
                                     Edit
                                 </button>
-                                <button className="update-delete-button"
-                                        disabled={localStorage.getItem("Role") === "ADMIN"}
-                                        onClick={() => onDelete(coord)}
+                                <button
+                                    className="update-delete-button"
+                                    disabled={localStorage.getItem("Role") === "ADMIN"}
+                                    onClick={() => onDelete(location)}
                                 >
                                     Delete
                                 </button>
                             </td>
                         </tr>
                     ))
-                ) :  (
+                ) : (
                     <tr>
                         <td colSpan="15">
-                            <div style={{textAlign: 'center', padding: '20px'}}>
-                                <h3 style={{color: '#dc3545', fontSize: '18px', fontWeight: 'bold'}}>
-                                    Oops! No more coordinates here...
+                            <div style={{ textAlign: "center", padding: "20px" }}>
+                                <h3 style={{ color: "#dc3545", fontSize: "18px", fontWeight: "bold" }}>
+                                    No locations found.
                                 </h3>
-                                <p style={{fontSize: '14px', color: '#6c757d'}}>
-                                    Maybe try a different page or perform another action!
+                                <p style={{ fontSize: "14px", color: "#6c757d" }}>
+                                    Try changing the page or sorting options.
                                 </p>
                             </div>
                         </td>
@@ -121,14 +127,16 @@ const CoordinatesTable = ({ onEdit, onDelete }) => {
                     Previous
                 </button>
                 <span className="page-numbers">
-                    {Array.from({length: Math.ceil(coordinates.length / size)}, (_, index) => (
-                        <button key={index} style={{backgroundColor: 'white', color: 'black', pointerEvents: 'none'}}>
+                    {Array.from({ length: Math.ceil(locations.length / size) }, (_, index) => (
+                        <button key={index} style={{ backgroundColor: "white", color: "black", pointerEvents: "none" }}>
                             {page + 1}
                         </button>
                     ))}
                 </span>
-                <button onClick={() => setPage(page + 1)}
-                        disabled={coordinates.length === 0 || coordinates.length < size}>
+                <button
+                    onClick={() => setPage(page + 1)}
+                    disabled={locations.length === 0 || locations.length < size}
+                >
                     Next
                 </button>
             </div>
@@ -136,4 +144,4 @@ const CoordinatesTable = ({ onEdit, onDelete }) => {
     );
 };
 
-export default CoordinatesTable;
+export default LocationTable;
