@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { PORT } from "../../config/config";
 
-const LocationTable = ({ onEdit, onDelete }) => {
-    const [locations, setLocations] = useState([]);
+const PersonTable = ({ onEdit, onDelete }) => {
+    const [persons, setPersons] = useState([]);
     const [page, setPage] = useState(0);
     const [sortBy, setSortBy] = useState("id");
     const [direction, setDirection] = useState("asc");
@@ -10,15 +10,15 @@ const LocationTable = ({ onEdit, onDelete }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        fetchLocations();
+        fetchPersons();
         const interval = setInterval(() => {
-            fetchLocations();
-        }, 1000);
+            fetchPersons();
+        }, 30000);
         return () => clearInterval(interval);
     }, [page, sortBy, direction, size, searchTerm]);
 
-    const fetchLocations = async () => {
-        const url = `http://localhost:${PORT}/api/v1/locations?sortBy=${sortBy}&direction=${direction}&page=${page}&size=${size}&nameContains=${searchTerm}`;
+    const fetchPersons = async () => {
+        const url = `http://localhost:${PORT}/api/v1/person?sortBy=${sortBy}&direction=${direction}&page=${page}&size=${size}&nameContains=${searchTerm}`;
         const token = localStorage.getItem("Authorization");
         const response = await fetch(url, {
             method: "GET",
@@ -28,7 +28,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
             },
         });
         const data = await response.json();
-        setLocations(data);
+        setPersons(data);
     };
 
     const handleSizeChange = (e) => {
@@ -51,7 +51,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
     };
 
     return (
-        <div className="location-table">
+        <div className="person-table">
             <div className="controls">
                 <label className="control-size-label">
                     Rows per page:
@@ -83,39 +83,47 @@ const LocationTable = ({ onEdit, onDelete }) => {
                     <th onClick={() => handleSort("name")}>
                         Name {sortBy === "name" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th onClick={() => handleSort("coordinateX")}>
-                        X {sortBy === "coordinateX" && direction === "asc" ? "↑" : "↓"}
+                    <th onClick={() => handleSort("color")}>
+                        Color {sortBy === "color" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th onClick={() => handleSort("coordinateY")}>
-                        Y {sortBy === "coordinateY" && direction === "asc" ? "↑" : "↓"}
+                    <th onClick={() => handleSort("hairColor")}>
+                        Hair Color {sortBy === "hairColor" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th onClick={() => handleSort("coordinateZ")}>
-                        Z {sortBy === "coordinateZ" && direction === "asc" ? "↑" : "↓"}
+                    <th onClick={() => handleSort("weight")}>
+                        Weight {sortBy === "weight" && direction === "asc" ? "↑" : "↓"}
+                    </th>
+                    <th onClick={() => handleSort("nationality")}>
+                        Nationality {sortBy === "nationality" && direction === "asc" ? "↑" : "↓"}
+                    </th>
+                    <th>
+                        Location id
                     </th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {locations.length > 0 ? (
-                    locations.map((location) => (
-                        <tr key={location.id}>
-                            <td>{location.id}</td>
-                            <td>{location.name}</td>
-                            <td>{location.coordinateX}</td>
-                            <td>{location.coordinateY}</td>
-                            <td>{location.coordinateZ || "N/A"}</td>
+                {persons.length > 0 ? (
+                    persons.map((person) => (
+                        <tr key={person.id}>
+                            <td>{person.id}</td>
+                            <td>{person.name}</td>
+                            <td>{person.color === "NONE" ? "N/A" : person.color}</td>
+                            <td>{person.hairColor}</td>
+                            <td>{person.weight || "N/A"}</td>
+                            <td>{person.nationality}</td>
+                            <td>{person.location ? person.location.id : "N/A"}</td>
                             <td>
                                 <button
                                     className="update-delete-button"
-                                    disabled={!location.updateable && localStorage.getItem("Role") === "ADMIN"}
-                                    onClick={() => onEdit(location)}
+                                    disabled={!person.updateable && localStorage.getItem("Role") === "ADMIN"}
+                                    onClick={() => onEdit(person)}
                                 >
                                     Edit
                                 </button>
                                 <button
                                     className="update-delete-button"
                                     disabled={localStorage.getItem("Role") === "ADMIN"}
-                                    onClick={() => onDelete(location)}
+                                    onClick={() => onDelete(person)}
                                 >
                                     Delete
                                 </button>
@@ -124,10 +132,10 @@ const LocationTable = ({ onEdit, onDelete }) => {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="15">
+                        <td colSpan="7">
                             <div style={{ textAlign: "center", padding: "20px" }}>
                                 <h3 style={{ color: "#dc3545", fontSize: "18px", fontWeight: "bold" }}>
-                                    No locations found.
+                                    No persons found.
                                 </h3>
                                 <p style={{ fontSize: "14px", color: "#6c757d" }}>
                                     Try changing the page or sorting options.
@@ -143,7 +151,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
                     Previous
                 </button>
                 <span className="page-numbers">
-                    {Array.from({ length: Math.ceil(locations.length / size) }, (_, index) => (
+                    {Array.from({ length: Math.ceil(persons.length / size) }, (_, index) => (
                         <button key={index} style={{ backgroundColor: "white", color: "black", pointerEvents: "none" }}>
                             {page + 1}
                         </button>
@@ -151,7 +159,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
                 </span>
                 <button
                     onClick={() => setPage(page + 1)}
-                    disabled={locations.length === 0 || locations.length < size}
+                    disabled={persons.length === 0 || persons.length < size}
                 >
                     Next
                 </button>
@@ -160,4 +168,4 @@ const LocationTable = ({ onEdit, onDelete }) => {
     );
 };
 
-export default LocationTable;
+export default PersonTable;

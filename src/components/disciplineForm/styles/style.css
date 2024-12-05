@@ -1,4 +1,4 @@
-.location-page {
+.discipline-page {
     font-family: 'Roboto', sans-serif;
     margin: 20px;
     padding: 20px;
@@ -9,7 +9,7 @@
     margin: 40px auto;
 }
 
-.location-page h1 {
+.discipline-page h1 {
     font-size: 32px;
     color: #2e8b57;
     text-align: center;
@@ -41,7 +41,7 @@ button:disabled {
     transform: scale(1.05);
 }
 
-.location-table {
+.discipline-table {
     padding: 10px;
     overflow-x: auto;
     background: white;
@@ -49,38 +49,38 @@ button:disabled {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.location-table table {
+.discipline-table table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.location-table th,
-.location-table td {
+.discipline-table th,
+.discipline-table td {
     text-align: left;
     padding: 12px 15px;
     border-bottom: 1px solid #ddd;
 }
 
-.location-table th {
+.discipline-table th {
     background-color: #2e8b57;
     color: white;
     cursor: pointer;
 }
 
-.location-table th:hover {
+.discipline-table th:hover {
     background-color: #267b46;
 }
 
-.location-table td {
+.discipline-table td {
     font-size: 14px;
     color: #333;
 }
 
-.location-table tr:nth-child(even) {
+.discipline-table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-.location-table tr:hover {
+.discipline-table tr:hover {
     background-color: #f1f1f1;
 }
 

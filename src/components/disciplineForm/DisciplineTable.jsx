@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { PORT } from "../../config/config";
 
-const LocationTable = ({ onEdit, onDelete }) => {
-    const [locations, setLocations] = useState([]);
+const DisciplineTable = ({ onEdit, onDelete }) => {
+    const [disciplines, setDisciplines] = useState([]);
     const [page, setPage] = useState(0);
     const [sortBy, setSortBy] = useState("id");
     const [direction, setDirection] = useState("asc");
@@ -10,15 +10,15 @@ const LocationTable = ({ onEdit, onDelete }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        fetchLocations();
+        fetchDisciplines();
         const interval = setInterval(() => {
-            fetchLocations();
-        }, 1000);
+            fetchDisciplines();
+        }, 30000);
         return () => clearInterval(interval);
     }, [page, sortBy, direction, size, searchTerm]);
 
-    const fetchLocations = async () => {
-        const url = `http://localhost:${PORT}/api/v1/locations?sortBy=${sortBy}&direction=${direction}&page=${page}&size=${size}&nameContains=${searchTerm}`;
+    const fetchDisciplines = async () => {
+        const url = `http://localhost:${PORT}/api/v1/disciplines?sortBy=${sortBy}&direction=${direction}&page=${page}&size=${size}&nameContains=${searchTerm}`;
         const token = localStorage.getItem("Authorization");
         const response = await fetch(url, {
             method: "GET",
@@ -28,7 +28,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
             },
         });
         const data = await response.json();
-        setLocations(data);
+        setDisciplines(data);
     };
 
     const handleSizeChange = (e) => {
@@ -51,7 +51,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
     };
 
     return (
-        <div className="location-table">
+        <div className="discipline-table">
             <div className="controls">
                 <label className="control-size-label">
                     Rows per page:
@@ -83,39 +83,43 @@ const LocationTable = ({ onEdit, onDelete }) => {
                     <th onClick={() => handleSort("name")}>
                         Name {sortBy === "name" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th onClick={() => handleSort("coordinateX")}>
-                        X {sortBy === "coordinateX" && direction === "asc" ? "↑" : "↓"}
+                    <th onClick={() => handleSort("lectureHours")}>
+                        Lecture Hours {sortBy === "lectureHours" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th onClick={() => handleSort("coordinateY")}>
-                        Y {sortBy === "coordinateY" && direction === "asc" ? "↑" : "↓"}
+                    <th onClick={() => handleSort("practiceHours")}>
+                        Practice Hours {sortBy === "practiceHours" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th onClick={() => handleSort("coordinateZ")}>
-                        Z {sortBy === "coordinateZ" && direction === "asc" ? "↑" : "↓"}
+                    <th onClick={() => handleSort("selfStudyHours")}>
+                        Self Study Hours {sortBy === "selfStudyHours" && direction === "asc" ? "↑" : "↓"}
+                    </th>
+                    <th onClick={() => handleSort("labsCount")}>
+                        Labs Count {sortBy === "labsCount" && direction === "asc" ? "↑" : "↓"}
                     </th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {locations.length > 0 ? (
-                    locations.map((location) => (
-                        <tr key={location.id}>
-                            <td>{location.id}</td>
-                            <td>{location.name}</td>
-                            <td>{location.coordinateX}</td>
-                            <td>{location.coordinateY}</td>
-                            <td>{location.coordinateZ || "N/A"}</td>
+                {disciplines.length > 0 ? (
+                    disciplines.map((discipline) => (
+                        <tr key={discipline.id}>
+                            <td>{discipline.id}</td>
+                            <td>{discipline.name}</td>
+                            <td>{discipline.lectureHours}</td>
+                            <td>{discipline.practiceHours}</td>
+                            <td>{discipline.selfStudyHours}</td>
+                            <td>{discipline.labsCount}</td>
                             <td>
                                 <button
                                     className="update-delete-button"
-                                    disabled={!location.updateable && localStorage.getItem("Role") === "ADMIN"}
-                                    onClick={() => onEdit(location)}
+                                    disabled={!discipline.updateable && localStorage.getItem("Role") === "ADMIN"}
+                                    onClick={() => onEdit(discipline)}
                                 >
                                     Edit
                                 </button>
                                 <button
                                     className="update-delete-button"
                                     disabled={localStorage.getItem("Role") === "ADMIN"}
-                                    onClick={() => onDelete(location)}
+                                    onClick={() => onDelete(discipline)}
                                 >
                                     Delete
                                 </button>
@@ -124,10 +128,10 @@ const LocationTable = ({ onEdit, onDelete }) => {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="15">
+                        <td colSpan="7">
                             <div style={{ textAlign: "center", padding: "20px" }}>
                                 <h3 style={{ color: "#dc3545", fontSize: "18px", fontWeight: "bold" }}>
-                                    No locations found.
+                                    No disciplines found.
                                 </h3>
                                 <p style={{ fontSize: "14px", color: "#6c757d" }}>
                                     Try changing the page or sorting options.
@@ -143,7 +147,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
                     Previous
                 </button>
                 <span className="page-numbers">
-                    {Array.from({ length: Math.ceil(locations.length / size) }, (_, index) => (
+                    {Array.from({ length: Math.ceil(disciplines.length / size) }, (_, index) => (
                         <button key={index} style={{ backgroundColor: "white", color: "black", pointerEvents: "none" }}>
                             {page + 1}
                         </button>
@@ -151,7 +155,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
                 </span>
                 <button
                     onClick={() => setPage(page + 1)}
-                    disabled={locations.length === 0 || locations.length < size}
+                    disabled={disciplines.length === 0 || disciplines.length < size}
                 >
                     Next
                 </button>
@@ -160,4 +164,4 @@ const LocationTable = ({ onEdit, onDelete }) => {
     );
 };
 
-export default LocationTable;
+export default DisciplineTable;

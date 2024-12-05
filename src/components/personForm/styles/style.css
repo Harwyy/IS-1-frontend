@@ -1,4 +1,4 @@
-.location-page {
+.person-page {
     font-family: 'Roboto', sans-serif;
     margin: 20px;
     padding: 20px;
@@ -9,7 +9,7 @@
     margin: 40px auto;
 }
 
-.location-page h1 {
+.person-page h1 {
     font-size: 32px;
     color: #2e8b57;
     text-align: center;
@@ -41,7 +41,7 @@ button:disabled {
     transform: scale(1.05);
 }
 
-.location-table {
+.person-table {
     padding: 10px;
     overflow-x: auto;
     background: white;
@@ -49,38 +49,38 @@ button:disabled {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.location-table table {
+.person-table table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.location-table th,
-.location-table td {
+.person-table th,
+.person-table td {
     text-align: left;
     padding: 12px 15px;
     border-bottom: 1px solid #ddd;
 }
 
-.location-table th {
+.person-table th {
     background-color: #2e8b57;
     color: white;
     cursor: pointer;
 }
 
-.location-table th:hover {
+.person-table th:hover {
     background-color: #267b46;
 }
 
-.location-table td {
+.person-table td {
     font-size: 14px;
     color: #333;
 }
 
-.location-table tr:nth-child(even) {
+.person-table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-.location-table tr:hover {
+.person-table tr:hover {
     background-color: #f1f1f1;
 }
 
@@ -343,4 +343,28 @@ button:disabled {
     outline: none;
     width: 200px;
     transition: border 0.3s ease;
+}
+
+.enum {
+    width: 100%;
+    padding: 10px;
+    font-size: 13px;
+    border-color: #94a8b3;
+    border-radius: 5px;
+    outline: none;
+    appearance: none;
+}
+
+.button-for-list {
+    background-color: #94a8b3;
+    color: white;
+    border: none;
+    border-radius: 10%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
 }

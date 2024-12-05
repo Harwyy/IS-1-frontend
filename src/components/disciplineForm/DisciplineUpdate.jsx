@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { PORT } from "../../config/config";
 
-const LocationUpdate = ({ onClose, location }) => {
+const DisciplineUpdate = ({ onClose, discipline }) => {
     const [form, setForm] = useState({
-        id: location?.id || "",
-        name: location?.name || "",
-        coordinateX: location?.coordinateX || "",
-        coordinateY: location?.coordinateY || "",
-        coordinateZ: location?.coordinateZ || null,
-        updateable: location?.updateable || false,
+        id: discipline?.id || "",
+        name: discipline?.name || "",
+        lectureHours: discipline?.lectureHours || "",
+        practiceHours: discipline?.practiceHours || "",
+        selfStudyHours: discipline?.selfStudyHours || "",
+        labsCount: discipline?.labsCount || "",
+        updateable: discipline?.updateable || false,
     });
     const [errors, setErrors] = useState({});
     const [responseMessage, setResponseMessage] = useState("");
@@ -20,23 +21,23 @@ const LocationUpdate = ({ onClose, location }) => {
         const checkOwnership = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:${PORT}/api/v1/locations/my`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: localStorage.getItem("Authorization"),
-                    },
-                });
+                    `http://localhost:${PORT}/api/v1/disciplines/my`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: localStorage.getItem("Authorization"),
+                        },
+                    });
 
                 if (response.ok) {
-                    const locations = await response.json();
-                    const locationExists = locations.some(
-                        (loc) => loc.id === location.id
+                    const disciplines = await response.json();
+                    const disciplineExists = disciplines.some(
+                        (disc) => disc.id === discipline.id
                     );
 
-                    setIsOwned(locationExists);
+                    setIsOwned(disciplineExists);
                 } else {
-                    setErrors("Failed to fetch your locations.");
+                    setErrors("Failed to fetch your disciplines.");
                 }
             } catch (error) {
                 setErrors("Error checking ownership. Please try again later.");
@@ -46,20 +47,21 @@ const LocationUpdate = ({ onClose, location }) => {
         };
 
         checkOwnership();
-    }, [location]);
+    }, [discipline]);
 
     useEffect(() => {
-        if (location) {
+        if (discipline) {
             setForm({
-                id: location.id,
-                name: location.name,
-                coordinateX: location.coordinateX,
-                coordinateY: location.coordinateY,
-                coordinateZ: location.coordinateZ,
-                updateable: location.updateable,
+                id: discipline.id,
+                name: discipline.name,
+                lectureHours: discipline.lectureHours,
+                practiceHours: discipline.practiceHours,
+                selfStudyHours: discipline.selfStudyHours,
+                labsCount: discipline.labsCount,
+                updateable: discipline.updateable,
             });
         }
-    }, [location]);
+    }, [discipline]);
 
     const validateForm = () => {
         const newErrors = {};
@@ -68,18 +70,20 @@ const LocationUpdate = ({ onClose, location }) => {
             newErrors.name = "Name is required.";
         }
 
-        if (form.coordinateX !== null && isNaN(form.coordinateX)) {
-            newErrors.coordinateX = "Coordinate X must be a number or null.";
+        if (!form.lectureHours || isNaN(form.lectureHours) || form.lectureHours < 1) {
+            newErrors.lectureHours = "Lecture hours must be a positive number.";
         }
 
-        if (form.coordinateY === "" || form.coordinateY === null) {
-            newErrors.coordinateY = "Coordinate Y is required.";
-        } else if (isNaN(form.coordinateY)) {
-            newErrors.coordinateY = "Coordinate Y must be a valid number.";
+        if (form.practiceHours !== "" && (isNaN(form.practiceHours) || form.practiceHours < 1)) {
+            newErrors.practiceHours = "Practice hours must be a positive number.";
         }
 
-        if (form.coordinateZ !== null && isNaN(form.coordinateZ)) {
-            newErrors.coordinateZ = "Coordinate Z must be a number or null.";
+        if (!form.selfStudyHours || isNaN(form.selfStudyHours) || form.selfStudyHours < 1) {
+            newErrors.selfStudyHours = "Self-study hours must be a positive number.";
+        }
+
+        if (form.labsCount !== "" && (isNaN(form.labsCount) || form.labsCount < 1)) {
+            newErrors.labsCount = "Labs count must be a positive number.";
         }
 
         return newErrors;
@@ -89,11 +93,11 @@ const LocationUpdate = ({ onClose, location }) => {
         e.preventDefault();
 
         if (!isOwned && localStorage.getItem("Role") !== "ADMIN") {
-            setErrors("You can only update your own locations.");
+            setErrors("You can only update your own disciplines.");
             return;
         }
 
-        const url = `http://localhost:${PORT}/api/v1/locations`;
+        const url = `http://localhost:${PORT}/api/v1/disciplines`;
         const token = localStorage.getItem("Authorization");
 
         const validationErrors = validateForm();
@@ -112,17 +116,17 @@ const LocationUpdate = ({ onClose, location }) => {
         });
 
         if (response.ok) {
-            setResponseMessage("Location updated successfully!");
+            setResponseMessage("Discipline updated successfully!");
             setIsSuccess(true);
         } else {
-            setResponseMessage("Error updating location. Please try again.");
+            setResponseMessage("Error updating discipline. Please try again.");
             setIsSuccess(false);
         }
     };
 
     return (
         <div className="modal">
-            <h2>Update Location</h2>
+            <h2>Update Discipline</h2>
             {isLoadingOwnership ? (
                 <p>Loading ownership information...</p>
             ) : (
@@ -139,42 +143,49 @@ const LocationUpdate = ({ onClose, location }) => {
                     />
                     {errors.name && <p className="error-message">{errors.name}</p>}
 
-                    <label>Coordinate X:</label>
+                    <label>Lecture Hours:</label>
                     <input
                         type="number"
-                        value={form.coordinateX === null ? "" : form.coordinateX}
+                        value={form.lectureHours}
                         onChange={(e) =>
-                            setForm({
-                                ...form,
-                                coordinateX: e.target.value === "" ? null : parseFloat(e.target.value),
-                            })
+                            setForm({ ...form, lectureHours: e.target.value })
                         }
                         disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
                     />
-                    {errors.coordinateX && <p className="error-message">{errors.coordinateX}</p>}
+                    {errors.lectureHours && <p className="error-message">{errors.lectureHours}</p>}
 
-                    <label>Coordinate Y:</label>
+                    <label>Practice Hours:</label>
                     <input
                         type="number"
-                        value={form.coordinateY}
-                        onChange={(e) => setForm({ ...form, coordinateY: parseFloat(e.target.value) })}
-                        disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
-                    />
-                    {errors.coordinateY && <p className="error-message">{errors.coordinateY}</p>}
-
-                    <label>Coordinate Z:</label>
-                    <input
-                        type="number"
-                        value={form.coordinateZ === null ? "" : form.coordinateZ}
+                        value={form.practiceHours}
                         onChange={(e) =>
-                            setForm({
-                                ...form,
-                                coordinateZ: e.target.value === "" ? null : parseFloat(e.target.value),
-                            })
+                            setForm({ ...form, practiceHours: e.target.value })
                         }
                         disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
                     />
-                    {errors.coordinateZ && <p className="error-message">{errors.coordinateZ}</p>}
+                    {errors.practiceHours && <p className="error-message">{errors.practiceHours}</p>}
+
+                    <label>Self-Study Hours:</label>
+                    <input
+                        type="number"
+                        value={form.selfStudyHours}
+                        onChange={(e) =>
+                            setForm({ ...form, selfStudyHours: e.target.value })
+                        }
+                        disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
+                    />
+                    {errors.selfStudyHours && <p className="error-message">{errors.selfStudyHours}</p>}
+
+                    <label>Labs Count:</label>
+                    <input
+                        type="number"
+                        value={form.labsCount}
+                        onChange={(e) =>
+                            setForm({ ...form, labsCount: e.target.value })
+                        }
+                        disabled={!isOwned && localStorage.getItem("Role") !== "ADMIN"}
+                    />
+                    {errors.labsCount && <p className="error-message">{errors.labsCount}</p>}
 
                     <label>
                         Updateable:
@@ -184,7 +195,7 @@ const LocationUpdate = ({ onClose, location }) => {
                             onChange={(e) =>
                                 setForm({ ...form, updateable: e.target.checked })
                             }
-                            disabled={(!isOwned && localStorage.getItem("Role") !== "ADMIN") || localStorage.getItem("Role") == "ADMIN"}
+                            disabled={localStorage.getItem("Role") == "ADMIN"}
                         />
                     </label>
 
@@ -193,6 +204,7 @@ const LocationUpdate = ({ onClose, location }) => {
                             You are not the owner of this object. You can't update it.
                         </div>
                     )}
+
                     {responseMessage && (
                         <div
                             className={`response-message ${isSuccess ? "success" : "error"}`}
@@ -216,4 +228,4 @@ const LocationUpdate = ({ onClose, location }) => {
     );
 };
 
-export default LocationUpdate;
+export default DisciplineUpdate;

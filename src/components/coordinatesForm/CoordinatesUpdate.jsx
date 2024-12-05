@@ -142,6 +142,7 @@ const CoordinatesUpdate = ({ onClose, coordinate }) => {
                         <input
                             type="checkbox"
                             checked={form.updateable}
+                            disabled={localStorage.getItem("Role") == "ADMIN"}
                             onChange={(e) =>
                                 setForm({ ...form, updateable: e.target.checked })
                             }

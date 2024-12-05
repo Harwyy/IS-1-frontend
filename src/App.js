@@ -9,6 +9,8 @@ import Menu from "./pages/Menu";
 import UserInfo from "./components/userInfo/UserInfo";
 import Coordinates from "./components/coordinatesForm/Coordinates";
 import Location from "./components/locationForm/Location";
+import Discipline from "./components/disciplineForm/Discipline";
+import Person from "./components/personForm/Person";
 
 export default function App() {
 
@@ -63,6 +65,26 @@ export default function App() {
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <UserInfo/>
                             <Location />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/discipline"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <UserInfo/>
+                            <Discipline />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/person"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <UserInfo/>
+                            <Person />
                         </ProtectedRoute>
                     }
                 />

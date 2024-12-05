@@ -11,8 +11,8 @@ const Menu = ({ onLogout }) => {
             <nav className="menu-nav">
                 <ul>
                     <li><Link to="/laboratory" className="menu-item">Laboratory Works</Link></li>
-                    <li><Link to="/discipline" className="menu-item">Disciplines</Link></li>
                     <li><Link to="/person" className="menu-item">People</Link></li>
+                    <li><Link to="/discipline" className="menu-item">Disciplines</Link></li>
                     <li><Link to="/location" className="menu-item">Locations</Link></li>
                     <li><Link to="/coordinates" className="menu-item">Coordinates</Link></li>
                     <li>
