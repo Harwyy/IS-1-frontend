@@ -12,6 +12,8 @@ import Location from "./components/locationForm/Location";
 import Discipline from "./components/disciplineForm/Discipline";
 import Person from "./components/personForm/Person";
 import LabWork from "./components/labWorkForm/LabWork";
+import CommandManager from "./components/commandForm/CommandManager";
+import Admin from "./components/adminForm/Admin";
 
 export default function App() {
 
@@ -96,6 +98,26 @@ export default function App() {
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <UserInfo/>
                             <LabWork />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/functions"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <UserInfo/>
+                            <CommandManager />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/approve"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <UserInfo/>
+                            <Admin />
                         </ProtectedRoute>
                     }
                 />

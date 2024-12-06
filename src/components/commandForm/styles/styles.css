@@ -1,0 +1,181 @@
+.functions-container {
+    font-family: 'Roboto', sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 40px auto;
+}
+
+.functions-title {
+    font-size: 32px;
+    color: #2e8b57;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.functions-description {
+    font-size: 16px;
+    color: #555;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.functions-list {
+    list-style-type: decimal;
+    padding-left: 20px;
+}
+
+.function-item {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.function-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-field {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 200px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+/* Кнопка "Back to Menu" */
+.back-to-menu {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.back-to-menu-button {
+    display: inline-block;
+    background-color: #2e8b57;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+}
+
+.results-table-container {
+    margin-top: 20px;
+    max-height: 300px; /* Максимальная высота таблицы */
+    overflow-y: auto; /* Добавить вертикальную прокрутку */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+.clear-table-button {
+    background-color: #ff4d4d; /* Red background */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    align-items: center;
+    text-align: center;
+}
+
+.clear-table-button:hover {
+    background-color: #ff1a1a; /* Darker red on hover */
+}
+
+.clear-table-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Adjust the margin if needed */
+}
+
+.clear-table-button {
+    background-color: #ff4d4d; /* Red background */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.clear-table-button:hover {
+    background-color: #ff1a1a; /* Darker red on hover */
+}
+
+.results-table th,
+.results-table td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.results-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.results-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.results-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+.back-to-menu-button:hover {
+    background-color: #267b46;
+    transform: scale(1.05);
+}
+
+
+.input-field:focus {
+    border-color: #2e8b57;
+}
+
+.create-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.create-button:hover {
+    background-color: #267b46;
+    transform: scale(1.05);
+}
+
+.error-message {
+    font-size: 14px;
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
+li.function-item {
+    list-style-type: none;
+}

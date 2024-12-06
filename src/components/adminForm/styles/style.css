@@ -1,0 +1,113 @@
+/* Основной контейнер */
+.admin-approval-container {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Контейнер для заголовка и кнопки */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Заголовок */
+.admin-approval-title {
+    font-size: 1.8rem;
+    color: #2e8b57;
+}
+
+/* Кнопка "Back to Menu" */
+.back-to-menu-button {
+    background-color: #2e8b57;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.back-to-menu-button:hover {
+    background-color: #267b46;
+}
+
+/* Заголовок списка */
+.admin-list-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Таблица */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.admin-table th,
+.admin-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.admin-table th {
+    background-color: #2e8b57;
+    color: #fff;
+}
+
+.admin-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.admin-table tr:hover {
+    background-color: #e6ffe6;
+}
+
+/* Кнопка подтверждения */
+.approve-button {
+    background-color: #2e8b57;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.approve-button:hover {
+    background-color: #267b46;
+}
+
+/* Сообщения об ошибках и успехе */
+.error-message {
+    color: #d9534f;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.success-message {
+    color: #5cb85c;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.no-admins-message {
+    font-size: 1rem;
+    color: #555;
+    text-align: center;
+    margin-top: 10px;
+}

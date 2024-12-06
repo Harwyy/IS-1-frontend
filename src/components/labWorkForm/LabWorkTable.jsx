@@ -9,6 +9,40 @@ const LabWorkTable = ({ onEdit, onDelete }) => {
     const [size, setSize] = useState(5);
     const [searchName, setSearchName] = useState("");
     const [searchDescription, setSearchDescription] = useState("");
+    const [searchId, setSearchId] = useState("");  // Search term for ID
+    const [foundLabWork, setFoundLabWork] = useState(null); // To store the result of the ID search
+    const [showDialog, setShowDialog] = useState(false); // To control dialog visibility
+
+    const handleSearchIdChange = (e) => {
+        setSearchId(e.target.value);
+    };
+
+    const handleSearchById = async () => {
+        if (searchId) {
+            const url = `http://localhost:${PORT}/api/v1/labworks/${searchId}`;
+            const token = localStorage.getItem("Authorization");
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setFoundLabWork(data);
+            } else {
+                setFoundLabWork(null);
+            }
+            setShowDialog(true);
+        }
+    };
+
+    const closeDialog = () => {
+        setShowDialog(false);
+        setSearchId("");
+    };
+
 
     useEffect(() => {
         fetchLabWorks();
@@ -123,6 +157,30 @@ const LabWorkTable = ({ onEdit, onDelete }) => {
                         placeholder="Enter description to search..."
                     />
                 </label>
+                <label className="control-size-label">
+                    Rows per page:
+                    <select className="select-size-label" value={size} onChange={handleSizeChange}>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((number) => (
+                            <option key={number} value={number}>
+                                {number}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <label className="control-search-id-label">
+                    Search by ID:
+                    <input
+                        style={{ marginLeft: "10px", marginRight: "10px" }}
+                        type="text"
+                        className="search-input"
+                        value={searchId}
+                        onChange={handleSearchIdChange}
+                        placeholder="Enter ID to search..."
+                    />
+                </label>
+                <button className="update-delete-button" onClick={handleSearchById} style={{ marginBottom: "20px" }}>
+                    Search by ID
+                </button>
             </div>
             <table>
                 <thead>
@@ -146,7 +204,7 @@ const LabWorkTable = ({ onEdit, onDelete }) => {
                         Minimal Point {sortBy === "minimalPoint" && direction === "asc" ? "↑" : "↓"}
                     </th>
                     <th onClick={() => handleSort("discipline")}>
-                        Discipline ID {sortBy === "discipline_id" && direction === "asc" ? "↑" : "↓"}
+                        Discipline ID {sortBy === "discipline" && direction === "asc" ? "↑" : "↓"}
                     </th>
                     <th onClick={() => handleSort("coordinates")}>
                         Coordinates ID {sortBy === "coordinates" && direction === "asc" ? "↑" : "↓"}
@@ -229,6 +287,123 @@ const LabWorkTable = ({ onEdit, onDelete }) => {
                 >
                     Next
                 </button>
+                {showDialog && (
+                    <div
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: "rgba(0, 0, 0, 0.7)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 9999,
+                            animation: "fadeIn 0.3s ease-in-out",
+                        }}
+                    >
+                        <div
+                            style={{
+                                backgroundColor: "white",
+                                padding: "30px",
+                                borderRadius: "10px",
+                                width: "80%",
+                                maxWidth: "500px",
+                                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+                                position: "relative",
+                                animation: "slideIn 0.3s ease-in-out",
+                            }}
+                        >
+            <span
+                onClick={closeDialog}
+                style={{
+                    position: "absolute",
+                    top: "15px",
+                    right: "15px",
+                    fontSize: "30px",
+                    color: "#333",
+                    cursor: "pointer",
+                    background: "none",
+                    border: "none",
+                }}
+            >
+                &times;
+            </span>
+                            {foundLabWork ? (
+                                <div>
+                                    <h2
+                                        style={{
+                                            fontSize: "24px",
+                                            marginBottom: "15px",
+                                            color: "#333",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        Lab Work Found
+                                    </h2>
+                                    <div style={{fontSize: "16px", lineHeight: "1.6"}}>
+                                        <p><strong>ID:</strong> {foundLabWork.id || "N/A"}</p>
+                                        <p><strong>Name:</strong> {foundLabWork.name || "N/A"}</p>
+                                        <strong>Description:</strong>
+                                        <div style={{maxHeight: "100px", overflowY: "auto", border: "1px solid black"}}>
+                                            <p style={{whiteSpace: "pre-wrap", wordBreak: "break-word"}}>
+                                                {foundLabWork.description || "N/A"}
+                                            </p>
+                                        </div>
+                                        <p><strong>Created At:</strong> {foundLabWork.createdAt || "N/A"}</p>
+                                        <p><strong>Difficulty:</strong> {foundLabWork.difficulty || "N/A"}</p>
+                                        <p><strong>Minimal Point:</strong> {foundLabWork.minimalPoint || "N/A"}</p>
+                                        <p><strong>Discipline</strong></p>
+                                        <p> ------- Discipline ID: {foundLabWork.discipline?.id || "N/A"}</p>
+                                        <p> ------- Name: {foundLabWork.discipline?.name || "N/A"}</p>
+                                        <p> ------- Lecture Hours: {foundLabWork.discipline?.lectureHours || "N/A"}</p>
+                                        <p> ------- Practice
+                                            Hours: {foundLabWork.discipline?.practiceHours || "N/A"}</p>
+                                        <p> ------- Self Study
+                                            Hours: {foundLabWork.discipline?.selfStudyHours || "N/A"}</p>
+                                        <p> ------- Labs Count: {foundLabWork.discipline?.labsCount || "N/A"}</p>
+                                        <p><strong>Coordinates</strong></p>
+                                        <p> ------- Coordinates ID: {foundLabWork.coordinates?.id || "N/A"}</p>
+                                        <p> ------- X: {foundLabWork.coordinates?.x || "N/A"}</p>
+                                        <p> ------- Y: {foundLabWork.coordinates?.y || "N/A"}</p>
+                                        <p><strong>Author</strong></p>
+                                        <p> ------- Author ID: {foundLabWork.author?.id || "N/A"}</p>
+                                        <p> ------- Name: {foundLabWork.author?.name || "N/A"}</p>
+                                        <p> ------- Color: {foundLabWork.author?.color || "N/A"}</p>
+                                        <p> ------- Hair Color: {foundLabWork.author?.hairColor || "N/A"}</p>
+                                        <p> ------- Weight: {foundLabWork.author?.weight || "N/A"}</p>
+                                        <p> ------- Nationality: {foundLabWork.author?.nationality || "N/A"}</p>
+                                        <p> ------- Location ID: {foundLabWork.author?.location?.id || "N/A"}</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div>
+                                    <h2
+                                        style={{
+                                            fontSize: "24px",
+                                            marginBottom: "15px",
+                                            color: "#dc3545",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        Lab Work Not Found
+                                    </h2>
+                                    <p
+                                        style={{
+                                            fontSize: "16px",
+                                            color: "#dc3545",
+                                            fontWeight: "500",
+                                            marginTop: "10px",
+                                        }}
+                                    >
+                                        The lab work with the provided ID does not exist.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

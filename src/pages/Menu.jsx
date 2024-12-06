@@ -15,6 +15,20 @@ const Menu = ({ onLogout }) => {
                     <li><Link to="/discipline" className="menu-item">Disciplines</Link></li>
                     <li><Link to="/location" className="menu-item">Locations</Link></li>
                     <li><Link to="/coordinates" className="menu-item">Coordinates</Link></li>
+                    {localStorage.getItem("Role") !== 'ADMIN' && (
+                        <li>
+                            <Link to="/functions" className="menu-item">
+                                Functions
+                            </Link>
+                        </li>
+                    )}
+                    {localStorage.getItem("Role") !== 'USER' && (
+                        <li>
+                            <Link to="/approve" className="menu-item">
+                                Approve new admins
+                            </Link>
+                        </li>
+                    )}
                     <li>
                         <button onClick={onLogout} className="menu-item logout-btn">Log Out</button>
                     </li>
