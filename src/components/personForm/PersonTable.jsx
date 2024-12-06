@@ -46,7 +46,7 @@ const PersonTable = ({ onEdit, onDelete }) => {
         fetchPersons();
         const interval = setInterval(() => {
             fetchPersons();
-        }, 30000);
+        }, 1000);
         return () => clearInterval(interval);
     }, [page, sortBy, direction, size, searchTerm]);
 

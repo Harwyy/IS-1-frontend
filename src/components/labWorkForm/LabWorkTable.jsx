@@ -48,7 +48,7 @@ const LabWorkTable = ({ onEdit, onDelete }) => {
         fetchLabWorks();
         const interval = setInterval(() => {
             fetchLabWorks();
-        }, 30000);
+        }, 1000);
         return () => clearInterval(interval);
     }, [page, sortBy, direction, size, searchName, searchDescription]);
 

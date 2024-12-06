@@ -16,7 +16,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
         fetchLocations();
         const interval = setInterval(() => {
             fetchLocations();
-        }, 30000);
+        }, 1000);
         return () => clearInterval(interval);
     }, [page, sortBy, direction, size, searchTerm]);
 

@@ -15,7 +15,7 @@ const DisciplineTable = ({ onEdit, onDelete }) => {
         fetchDisciplines();
         const interval = setInterval(() => {
             fetchDisciplines();
-        }, 30000);
+        }, 1000);
         return () => clearInterval(interval);
     }, [page, sortBy, direction, size]);
 
