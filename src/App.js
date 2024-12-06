@@ -11,6 +11,7 @@ import Coordinates from "./components/coordinatesForm/Coordinates";
 import Location from "./components/locationForm/Location";
 import Discipline from "./components/disciplineForm/Discipline";
 import Person from "./components/personForm/Person";
+import LabWork from "./components/labWorkForm/LabWork";
 
 export default function App() {
 
@@ -85,6 +86,16 @@ export default function App() {
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <UserInfo/>
                             <Person />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/laboratory"
+                    element={
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                            <UserInfo/>
+                            <LabWork />
                         </ProtectedRoute>
                     }
                 />

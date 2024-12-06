@@ -6,7 +6,7 @@ const Menu = ({ onLogout }) => {
     return (
         <div className="menu-container">
             <div className="menu-header">
-                <h2>Welcome, {localStorage.getItem("Name")}</h2>
+                <h2>Welcome, {localStorage.getItem("Name").toLowerCase()}</h2>
             </div>
             <nav className="menu-nav">
                 <ul>

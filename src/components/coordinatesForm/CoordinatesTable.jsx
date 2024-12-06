@@ -105,7 +105,7 @@ const CoordinatesTable = ({ onEdit, onDelete }) => {
                         <td colSpan="15">
                             <div style={{textAlign: 'center', padding: '20px'}}>
                                 <h3 style={{color: '#dc3545', fontSize: '18px', fontWeight: 'bold'}}>
-                                    Oops! No more coordinates here...
+                                    No coordinates found.
                                 </h3>
                                 <p style={{fontSize: '14px', color: '#6c757d'}}>
                                     Maybe try a different page or perform another action!

@@ -167,6 +167,7 @@ const PersonCreate = ({ onClose }) => {
                         className="button-for-list"
                         onClick={() => setShowLocationModal(true)}
                         title="Create New Location"
+
                     >
                         +
                     </button>

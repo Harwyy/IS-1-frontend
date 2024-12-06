@@ -1,0 +1,370 @@
+.labwork-page {
+    font-family: 'Roboto', sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 1500px;
+    margin: 40px auto;
+}
+
+.labwork-page h1 {
+    font-size: 32px;
+    color: #2e8b57;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+button:disabled {
+    background-color: #d6d6d6;
+    color: #8c8c8c;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.create-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.create-button:hover {
+    background-color: #267b46;
+    transform: scale(1.05);
+}
+
+.labwork-table {
+    padding: 10px;
+    overflow-x: auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.labwork-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.labwork-table th,
+.labwork-table td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.labwork-table th {
+    background-color: #2e8b57;
+    color: white;
+    cursor: pointer;
+}
+
+.labwork-table th:hover {
+    background-color: #267b46;
+}
+
+.labwork-table td {
+    font-size: 14px;
+    color: #333;
+}
+
+.labwork-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.labwork-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.edit-button,
+.delete-button {
+    background-color: #ff7f50;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button:hover {
+    background-color: #e06a3c;
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #b02a37;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    background-color: #2e8b57;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    margin: 0 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #267b46;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    max-width: 90%;
+    z-index: 1000;
+}
+
+.modal h2 {
+    font-size: 24px;
+    color: #2e8b57;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal label {
+    font-size: 14px;
+    color: #333;
+}
+
+.modal input[type="number"],
+.modal input[type="text"],
+.modal input[type="checkbox"] {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.modal input[type="checkbox"] {
+    width: auto;
+    margin-left: 10px;
+}
+
+.modal input:focus {
+    border-color: #2e8b57;
+}
+
+.modal button[type="submit"] {
+    background-color: #2e8b57;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal button[type="submit"]:hover {
+    background-color: #267b46;
+    transform: scale(1.05);
+}
+
+.modal button.cancel-button {
+    background-color: #ccc;
+    color: #333;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal button.cancel-button:hover {
+    background-color: #bbb;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.control-size-label {
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.select-size-label {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    width: 80px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.update-delete-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    width: auto;
+}
+
+.update-delete-button:hover {
+    background-color: #267b46;
+    transform: scale(1.05);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    align-items: center;
+}
+
+.back-to-menu-link {
+    font-size: 14px;
+    color: #4CAF50;
+    text-decoration: none;
+    border: 1px solid #4CAF50;
+    border-radius: 5px;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}
+
+.back-to-menu-link:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.back-to-menu-link:active {
+    transform: scale(0.95);
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.cancel-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cancel-button:hover {
+    background-color: #e53935;
+}
+
+.cancel-button:active {
+    transform: scale(0.98);
+}
+
+.control-search-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+    width: 200px;
+    transition: border 0.3s ease;
+}
+
+.enum {
+    width: 100%;
+    padding: 10px;
+    font-size: 13px;
+    border-color: #94a8b3;
+    border-radius: 5px;
+    outline: none;
+    appearance: none;
+}
+
+.button-for-list {
+    background-color: #94a8b3;
+    color: white;
+    border: none;
+    border-radius: 10%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { PORT } from "../../config/config";
+import LocationCreate from "../locationForm/LocationCreate";
 
 const PersonUpdate = ({ onClose, person }) => {
     const [form, setForm] = useState({
@@ -18,6 +19,7 @@ const PersonUpdate = ({ onClose, person }) => {
     const [locations, setLocations] = useState([]);
     const [isOwned, setIsOwned] = useState(false);
     const [isLoadingOwnership, setIsLoadingOwnership] = useState(true);
+    const [showLocationModal, setShowLocationModal] = useState(false);
 
     const userRole = localStorage.getItem("Role");
 
@@ -25,13 +27,15 @@ const PersonUpdate = ({ onClose, person }) => {
         const fetchLocations = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:${PORT}/api/v1/locations/my`, {
+                    `http://localhost:${PORT}/api/v1/locations/my`,
+                    {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
                             Authorization: localStorage.getItem("Authorization"),
                         },
-                    });
+                    }
+                );
 
                 if (response.ok) {
                     const data = await response.json();
@@ -45,20 +49,21 @@ const PersonUpdate = ({ onClose, person }) => {
         };
 
         fetchLocations();
-    }, []);
+    }, [showLocationModal]);
 
-    // Check ownership
     useEffect(() => {
         const checkOwnership = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:${PORT}/api/v1/person/my`, {
+                    `http://localhost:${PORT}/api/v1/person/my`,
+                    {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
                             Authorization: localStorage.getItem("Authorization"),
                         },
-                    });
+                    }
+                );
 
                 if (response.ok) {
                     const persons = await response.json();
@@ -76,6 +81,12 @@ const PersonUpdate = ({ onClose, person }) => {
 
         checkOwnership();
     }, [person]);
+
+    const handleLocationCreated = (newLocation) => {
+        setLocations((prev) => [...prev, newLocation]);
+        setForm((prev) => ({ ...prev, locationId: newLocation.id }));
+        setShowLocationModal(false); // Закрываем модальное окно
+    };
 
     const validateForm = () => {
         const newErrors = {};
@@ -172,21 +183,32 @@ const PersonUpdate = ({ onClose, person }) => {
                     </select>
 
                     <label>Location:</label>
-                    <select
-                        className="enum"
-                        value={form.locationId || ""}
-                        onChange={(e) =>
-                            setForm({ ...form, locationId: e.target.value || null })
-                        }
-                        disabled={!isOwned && userRole !== "ADMIN"}
-                    >
-                        <option value="">Select Location</option>
-                        {locations.map((loc) => (
-                            <option key={loc.id} value={loc.id}>
-                                Location ID: {loc.id}
-                            </option>
-                        ))}
-                    </select>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <select
+                            className="enum"
+                            value={form.locationId || ""}
+                            onChange={(e) =>
+                                setForm({ ...form, locationId: e.target.value || null })
+                            }
+                            disabled={(!isOwned && userRole !== "ADMIN") || userRole === "ADMIN"}
+                        >
+                            <option value="">Select Location</option>
+                            {locations.map((loc) => (
+                                <option key={loc.id} value={loc.id}>
+                                    Location ID: {loc.id}
+                                </option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            className="button-for-list"
+                            onClick={() => setShowLocationModal(true)}
+                            title="Create New Location"
+                            disabled={(!isOwned && userRole !== "ADMIN") || userRole === "ADMIN"}
+                        >
+                            +
+                        </button>
+                    </div>
 
                     <label>Weight:</label>
                     <input
@@ -219,13 +241,13 @@ const PersonUpdate = ({ onClose, person }) => {
                         <input
                             type="checkbox"
                             checked={form.updateable}
-                            disabled={!isOwned && userRole !== "ADMIN"}
+                            disabled={(!isOwned && userRole !== "ADMIN") || userRole === "ADMIN"}
                             onChange={(e) =>
                                 setForm({ ...form, updateable: e.target.checked })
                             }
                         />
                     </label>
-                    {(!isOwned && localStorage.getItem("Role") !== "ADMIN") && (
+                    {(!isOwned && userRole !== "ADMIN") && (
                         <div className="error">
                             You are not the owner of this object. You can't update it.
                         </div>
@@ -248,7 +270,14 @@ const PersonUpdate = ({ onClose, person }) => {
                         Cancel
                     </button>
                 </form>
-                )}
+            )}
+
+            {showLocationModal && (
+                <LocationCreate
+                    onClose={() => setShowLocationModal(false)}
+                    onCreate={handleLocationCreated}
+                />
+            )}
         </div>
     );
 };

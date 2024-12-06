@@ -1,34 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { PORT } from "../../config/config";
 
-const CoordinatesDelete = ({ onClose, coordinate }) => {
+const LabWorkDelete = ({ onClose, labWork }) => {
     const [isOwned, setIsOwned] = useState(false);
     const [isLoadingOwnership, setIsLoadingOwnership] = useState(true);
-    const [isUsedInLabWork, setIsUsedInLabWork] = useState(false);
-    const [isLoadingLabWorks, setIsLoadingLabWorks] = useState(true);
+    const [isCoordinateUsed, setIsCoordinateUsed] = useState(false);
+    const [isLoadingCoordinates, setIsLoadingCoordinates] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         const checkOwnership = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:${PORT}/api/v1/coordinates/my`, {
+                    `http://localhost:${PORT}/api/v1/labworks/my`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": localStorage.getItem("Authorization"),
+                            Authorization: localStorage.getItem("Authorization"),
                         },
                     });
 
                 if (response.ok) {
-                    const coordinates = await response.json();
-                    const coordinateExists = coordinates.some(
-                        (coord) => coord.id === coordinate.id
-                    );
-
-                    setIsOwned(coordinateExists);
+                    const labWorks = await response.json();
+                    const isLabWorkOwned = labWorks.some((lw) => lw.id === labWork.id);
+                    setIsOwned(isLabWorkOwned);
                 } else {
-                    setErrorMessage("Failed to fetch your coordinates.");
+                    setErrorMessage("Failed to fetch your lab works.");
                 }
             } catch (error) {
                 setErrorMessage("Error checking ownership. Please try again later.");
@@ -37,72 +34,73 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
             }
         };
 
-        const checkLabWorkUsage = async () => {
+        const checkCoordinateUsage = async () => {
             try {
                 const response = await fetch(
                     `http://localhost:${PORT}/api/v1/labworks/my`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": localStorage.getItem("Authorization"),
+                            Authorization: localStorage.getItem("Authorization"),
                         },
                     });
 
                 if (response.ok) {
                     const labWorks = await response.json();
-                    const isCoordinateUsed = labWorks.some((lw) => lw.coordinates.id === coordinate.id
-                    );
+                    const isCoordinateInUse = labWorks.some((lw) => lw.coordinates.id === labWork.coordinates.id && lw.id !== labWork.id);
 
-                    setIsUsedInLabWork(isCoordinateUsed);
+                    setIsCoordinateUsed(isCoordinateInUse);
                 } else {
-                    setErrorMessage("Failed to fetch your lab works.");
+                    setErrorMessage("Failed to fetch lab works for coordinate usage.");
                 }
             } catch (error) {
-                alert(error)
-                setErrorMessage("Error checking lab work usage. Please try again later.");
+                setErrorMessage("Error checking coordinate usage. Please try again later.");
             } finally {
-                setIsLoadingLabWorks(false);
+                setIsLoadingCoordinates(false);
             }
         };
 
         checkOwnership();
-        checkLabWorkUsage();
-    }, [coordinate]);
+        checkCoordinateUsage();
+    }, [labWork]);
 
     const handleDelete = async () => {
         if (!isOwned) {
-            setErrorMessage("You can only delete your own coordinates.");
+            setErrorMessage("You can only delete your own lab works.");
             return;
         }
 
-        if (isUsedInLabWork) {
-            setErrorMessage(
-                "You cannot delete this coordinate because it is used in one of your lab works."
-            );
+        if (isCoordinateUsed) {
+            setErrorMessage("You cannot delete this lab work because its coordinate is used in another lab work.");
             return;
         }
 
         try {
-            await fetch(`http://localhost:${PORT}/api/v1/coordinates/${coordinate.id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": localStorage.getItem("Authorization"),
-                },
-            });
+            const response = await fetch(
+                `http://localhost:${PORT}/api/v1/labworks/${labWork.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: localStorage.getItem("Authorization"),
+                    },
+                });
 
-            onClose();
+            if (response.ok) {
+                onClose(); // Закрыть модальное окно после успешного удаления
+            } else {
+                setErrorMessage("Error deleting the lab work. Please try again.");
+            }
         } catch (error) {
-            setErrorMessage("Error deleting the coordinate. Please try again.");
+            setErrorMessage("Error deleting the lab work. Please try again.");
         }
     };
 
     return (
         <div className="modal">
-            <h2>Delete Coordinates</h2>
+            <h2>Delete Lab Work</h2>
 
-            {isLoadingOwnership || isLoadingLabWorks ? (
-                <p>Loading ownership and lab work usage information...</p>
+            {isLoadingOwnership || isLoadingCoordinates ? (
+                <p>Loading ownership and coordinate usage information...</p>
             ) : (
                 <>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
@@ -111,13 +109,13 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
                         <p className="error" style={{ marginTop: "15px" }}>
                             You are not the owner of this object. You can't delete it.
                         </p>
-                    ) : isUsedInLabWork ? (
+                    ) : isCoordinateUsed ? (
                         <p className="error" style={{ marginTop: "15px" }}>
-                            You cannot delete this coordinate because it is used in one of your lab works.
+                            You cannot delete this lab work because its coordinate is used in another lab work.
                         </p>
                     ) : (
                         <>
-                            <p>Are you sure you want to delete the coordinate with ID {coordinate.id}?</p>
+                            <p>Are you sure you want to delete the lab work with ID {labWork.id}?</p>
                             <div className="modal-actions" style={{ marginTop: "15px" }}>
                                 <button
                                     onClick={handleDelete}
@@ -141,4 +139,4 @@ const CoordinatesDelete = ({ onClose, coordinate }) => {
     );
 };
 
-export default CoordinatesDelete;
+export default LabWorkDelete;

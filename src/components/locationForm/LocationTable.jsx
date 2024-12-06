@@ -13,7 +13,7 @@ const LocationTable = ({ onEdit, onDelete }) => {
         fetchLocations();
         const interval = setInterval(() => {
             fetchLocations();
-        }, 1000);
+        }, 30000);
         return () => clearInterval(interval);
     }, [page, sortBy, direction, size, searchTerm]);
 

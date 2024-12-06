@@ -1,5 +1,5 @@
 .menu-container {
-    background: #d0f1d0;
+    /*background: #d0f1d0;*/
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     max-width: 400px;
@@ -15,7 +15,7 @@
 
 .menu-header {
     color: #2e8b57;
-    font-size: 30px;
+    font-size: 23px;
     margin-bottom: 25px;
     font-weight: 700;
     text-align: center;

@@ -95,8 +95,8 @@ const PersonTable = ({ onEdit, onDelete }) => {
                     <th onClick={() => handleSort("nationality")}>
                         Nationality {sortBy === "nationality" && direction === "asc" ? "↑" : "↓"}
                     </th>
-                    <th>
-                        Location id
+                    <th onClick={() => handleSort("location")}>
+                        Location ID  {sortBy === "location" && direction === "asc" ? "↑" : "↓"}
                     </th>
                     <th>Actions</th>
                 </tr>
@@ -132,7 +132,7 @@ const PersonTable = ({ onEdit, onDelete }) => {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="7">
+                        <td colSpan="9">
                             <div style={{ textAlign: "center", padding: "20px" }}>
                                 <h3 style={{ color: "#dc3545", fontSize: "18px", fontWeight: "bold" }}>
                                     No persons found.
