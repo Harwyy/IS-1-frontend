@@ -2,7 +2,26 @@ import React, { useState, useEffect } from 'react';
 import "./styles/styles.css";
 import { PORT } from "../../config/config";
 
+const Notification = ({ message, onClose }) => {
+    useEffect(() => {
+        const timer = setTimeout(onClose, 10000); // Автоматическое закрытие через 10 секунд
+        return () => clearTimeout(timer);
+    }, [onClose]);
+
+    if (!message) return null;
+
+    return (
+        <div className="notification">
+            <p>{message}</p>
+            <button className="close-button" onClick={onClose}>
+                ✕
+            </button>
+        </div>
+    );
+};
+
 const FunctionsComponent = () => {
+    const [notifications, setNotifications] = useState([]); // Уведомления
     const [input1, setInput1] = useState(''); // MinimalPoint input
     const [input2, setInput2] = useState(''); // MinimalPoint threshold input
     const [inputSubstring, setInputSubstring] = useState(''); // Substring input for search
@@ -19,6 +38,13 @@ const FunctionsComponent = () => {
     const [errorMessageAdd, setErrorMessageAdd] = useState(''); // Error message for adding lab work
     const [errorMessageDeleteLabWork, setErrorMessageDeleteLabWork] = useState(''); // Error message for deleting lab work
 
+    const addNotification = (message) => {
+        setNotifications((prev) => [...prev, message]);
+    };
+
+    const removeNotification = (index) => {
+        setNotifications((prev) => prev.filter((_, i) => i !== index));
+    };
 
     const handleDeleteLabWork = async () => {
         if (!selectedLabWork2) {
@@ -36,7 +62,7 @@ const FunctionsComponent = () => {
             });
 
             if (response.ok) {
-                alert(`LabWork with ID ${selectedLabWork2} was successfully deleted.`);
+                addNotification(`LabWork with ID ${selectedLabWork2} was successfully deleted.`);
                 setErrorMessageDeleteLabWork('');
             } else {
                 setErrorMessageDeleteLabWork('Failed to delete LabWork. Please try again.');
@@ -117,7 +143,7 @@ const FunctionsComponent = () => {
             });
 
             if (response.ok) {
-                alert(`LabWork with ID ${selectedLabWork} added to Discipline with ID ${selectedDiscipline}`);
+                addNotification(`LabWork with ID ${selectedLabWork} added to Discipline with ID ${selectedDiscipline}`);
                 setErrorMessageAdd('');
             } else {
                 setErrorMessageAdd('Failed to add LabWork to Discipline. Please try again.');
@@ -146,7 +172,7 @@ const FunctionsComponent = () => {
             const responseText = await response.text();
 
             if (response.status === 204) {
-                alert(`Object with minimalPoint ${minimalPoint} was deleted successfully.`);
+                addNotification(`Object with minimalPoint ${minimalPoint} was deleted successfully.`);
                 setErrorMessageDelete('');
             } else {
                 setErrorMessageDelete(responseText);
@@ -175,7 +201,7 @@ const FunctionsComponent = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                alert(`Number of objects with minimalPoint > ${input2}: ${data}`);
+                addNotification(`Number of objects with minimalPoint > ${input2}: ${data}`);
                 setErrorMessageCount('');
             } else {
                 setErrorMessageCount('Failed to retrieve count. Please try again.');
@@ -222,6 +248,15 @@ const FunctionsComponent = () => {
     return (
         <div className="functions-container">
             <h1 className="functions-title">Functions</h1>
+            <div className="notifications-container">
+                {notifications.map((message, index) => (
+                    <Notification
+                        key={index}
+                        message={message}
+                        onClose={() => removeNotification(index)}
+                    />
+                ))}
+            </div>
             <p className="functions-description">
                 Delete laboratory work with provided minimal point.
             </p>
@@ -236,7 +271,8 @@ const FunctionsComponent = () => {
                                 onChange={(e) => setInput1(e.target.value)}
                                 placeholder="Enter minimalPoint"
                             />
-                            <button className="create-button" style={{marginLeft: "10px"}} onClick={handleDeleteButtonClick}>
+                            <button className="create-button" style={{marginLeft: "10px"}}
+                                    onClick={handleDeleteButtonClick}>
                                 Submit (Delete)
                             </button>
                         </div>
@@ -257,7 +293,8 @@ const FunctionsComponent = () => {
                                 onChange={(e) => setInput2(e.target.value)}
                                 placeholder="Enter minimalPoint threshold"
                             />
-                            <button className="create-button" style={{marginLeft: "10px"}} onClick={handleCountButtonClick}>
+                            <button className="create-button" style={{marginLeft: "10px"}}
+                                    onClick={handleCountButtonClick}>
                                 Submit (Get Count)
                             </button>
                         </div>
@@ -278,7 +315,8 @@ const FunctionsComponent = () => {
                                 onChange={(e) => setInputSubstring(e.target.value)}
                                 placeholder="Enter description substring"
                             />
-                            <button className="create-button" style={{marginLeft: "10px"}} onClick={handleSubstringSearch}>
+                            <button className="create-button" style={{marginLeft: "10px"}}
+                                    onClick={handleSubstringSearch}>
                                 Submit (Search by Substring)
                             </button>
                         </div>
@@ -316,7 +354,8 @@ const FunctionsComponent = () => {
                                     </option>
                                 ))}
                             </select>
-                            <button className="create-button" style={{marginLeft: "10px"}} onClick={handleAddLabWorkToDiscipline}>
+                            <button className="create-button" style={{marginLeft: "10px"}}
+                                    onClick={handleAddLabWorkToDiscipline}>
                                 Add LabWork to Discipline
                             </button>
                         </div>

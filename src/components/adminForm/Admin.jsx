@@ -7,6 +7,7 @@ const AdminApprovalForm = () => {
     const [unconfirmedAdmins, setUnconfirmedAdmins] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [showNotification, setShowNotification] = useState(false);
 
     const fetchUnconfirmedAdmins = async () => {
         setErrorMessage('');
@@ -22,9 +23,9 @@ const AdminApprovalForm = () => {
             if (response.ok) {
                 const data = await response.json();
                 setUnconfirmedAdmins(data);
-            }  else if (response.status === 404) {
-
-            }else {
+            } else if (response.status === 404) {
+                setUnconfirmedAdmins([]); // Если данных нет, очистить список
+            } else {
                 setErrorMessage('Failed to fetch unconfirmed admins. Please try again.');
             }
         } catch (error) {
@@ -46,8 +47,14 @@ const AdminApprovalForm = () => {
             });
             if (response.ok) {
                 setSuccessMessage(`Admin with ID ${adminId} successfully approved.`);
-                fetchUnconfirmedAdmins();
-            }else {
+                setShowNotification(true); // Показать уведомление
+                setTimeout(() => setShowNotification(false), 3000); // Скрыть уведомление через 3 секунды
+
+                // Удалить утвержденного администратора из списка
+                setUnconfirmedAdmins((prevAdmins) =>
+                    prevAdmins.filter((admin) => admin.id !== adminId)
+                );
+            } else {
                 setErrorMessage(`Failed to approve admin with ID ${adminId}.`);
             }
         } catch (error) {
@@ -100,6 +107,29 @@ const AdminApprovalForm = () => {
                     </table>
                 )}
             </div>
+
+            {showNotification && (
+                <div className="notification">
+                    Admin approved successfully!
+                </div>
+            )}
+
+            <style jsx>{`
+                .notification {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background-color: #2e8b57;
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 14px;
+                    opacity: 0.9;
+                    z-index: 1000;
+                }
+            `}</style>
         </div>
     );
 };

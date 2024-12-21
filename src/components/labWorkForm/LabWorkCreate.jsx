@@ -282,7 +282,7 @@ const LabWorkCreate = ({ onClose }) => {
                         <option value="">Select Coordinates</option>
                         {coordinates.map((coordinate) => (
                             <option key={coordinate.id} value={coordinate.id}>
-                                Coordinates ID: {coordinate.id}
+                                Coordinates ID: {coordinate.id} - x: {coordinate.x}; y: {coordinate.y}
                             </option>
                         ))}
                     </select>

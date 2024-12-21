@@ -33,30 +33,74 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
     const userRole = localStorage.getItem("Role");
 
     useEffect(() => {
-        fetchRelatedData();
-    }, []);
+        if (!showDisciplineModal) fetchDisciplines();
+        if (!showAuthorModal) fetchAuthors();
+        if (!showCoordinatesModal) fetchCoordinates();
+    }, [showDisciplineModal, showAuthorModal, showCoordinatesModal]);
 
-    const fetchRelatedData = async () => {
+    const fetchDisciplines = async () => {
+        const url = `http://localhost:${PORT}/api/v1/disciplines/my`;
+        const token = localStorage.getItem("Authorization");
         try {
-            const token = localStorage.getItem("Authorization");
-
-            const [disciplinesRes, authorsRes, coordinatesRes] = await Promise.all([
-                fetch(`http://localhost:${PORT}/api/v1/disciplines/my`, {
-                    headers: { Authorization: token },
-                }),
-                fetch(`http://localhost:${PORT}/api/v1/person/my`, {
-                    headers: { Authorization: token },
-                }),
-                fetch(`http://localhost:${PORT}/api/v1/coordinates/my`, {
-                    headers: { Authorization: token },
-                }),
-            ]);
-
-            if (disciplinesRes.ok) setDisciplines(await disciplinesRes.json());
-            if (authorsRes.ok) setAuthors(await authorsRes.json());
-            if (coordinatesRes.ok) setCoordinates(await coordinatesRes.json());
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setDisciplines(data);
+            } else {
+                console.error("Failed to fetch disciplines.");
+            }
         } catch (error) {
-            console.error("Error fetching related data:", error);
+            console.error("Error fetching disciplines:", error);
+        }
+    };
+
+    const fetchAuthors = async () => {
+        const url = `http://localhost:${PORT}/api/v1/person/my`;
+        const token = localStorage.getItem("Authorization");
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setAuthors(data);
+            } else {
+                console.error("Failed to fetch authors.");
+            }
+        } catch (error) {
+            console.error("Error fetching authors:", error);
+        }
+    };
+
+    const fetchCoordinates = async () => {
+        const url = `http://localhost:${PORT}/api/v1/coordinates/my`;
+        const token = localStorage.getItem("Authorization");
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setCoordinates(data);
+            } else {
+                console.error("Failed to fetch coordinates.");
+            }
+        } catch (error) {
+            console.error("Error fetching coordinates:", error);
         }
     };
 
@@ -76,7 +120,7 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
 
                 if (response.ok) {
                     const labworks = await response.json();
-                    const isPersonOwned = labworks.some((p) => p.id === labWork.id); // Используем labWork из пропсов
+                    const isPersonOwned = labworks.some((p) => p.id === labWork.id);
                     setIsOwned(isPersonOwned);
                 } else {
                     console.error("Failed to fetch person's ownership status.");
@@ -137,6 +181,12 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
             }),
         });
 
+        console.log(JSON.stringify({
+            ...form,
+            discipline: form.disciplineId ? { id: form.disciplineId } : null,
+            author: form.authorId ? { id: form.authorId } : null,
+            coordinates: form.coordinatesId ? { id: form.coordinatesId } : null,
+        }))
         if (response.ok) {
             setResponseMessage("LabWork updated successfully!");
             setIsSuccess(true);
@@ -144,6 +194,24 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
             setResponseMessage("Error updating LabWork. Please try again.");
             setIsSuccess(false);
         }
+    };
+
+    const handleCoordinatesCreated = (newCoordinates) => {
+        setCoordinates((prev) => [...prev, newCoordinates]);
+        setForm((prev) => ({...prev, coordinatesId: newCoordinates.id}));
+        setShowCoordinatesModal(false);
+    };
+
+    const handleDisciplineCreated = (newDiscipline) => {
+        setDisciplines((prev) => [...prev, newDiscipline]);
+        setForm((prev) => ({ ...prev, disciplineId: newDiscipline.id }));
+        setShowDisciplineModal(false);
+    };
+
+    const handleAuthorCreated = (newAuthor) => {
+        setAuthors((prev) => [...prev, newAuthor]);
+        setForm((prev) => ({ ...prev, authorId: newAuthor.id }));
+        setShowAuthorModal(false);
     };
 
     return (
@@ -200,7 +268,7 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
                             className="enum"
                             value={form.disciplineId || ""}
                             onChange={(e) =>
-                                setForm({...form, disciplineId: e.target.value})}
+                                setForm({...form, disciplineId: e.target.value || null})}
                         >
                             <option value="">Select Discipline</option>
                             {disciplines.map((d) => (
@@ -217,15 +285,6 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
                         >
                             +
                         </button>
-                        {showDisciplineModal && (
-                            <DisciplineCreate
-                                onClose={() => setShowDisciplineModal(false)}
-                                onCreate={(newDiscipline) => {
-                                    setDisciplines((prev) => [...prev, newDiscipline]);
-                                    setForm({...form, disciplineId: newDiscipline.id});
-                                }}
-                            />
-                        )}
                     </div>
 
                     <label>Author (optional):</label>
@@ -254,15 +313,6 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
                         >
                             +
                         </button>
-                        {showAuthorModal && (
-                            <PersonCreate
-                                onClose={() => setShowAuthorModal(false)}
-                                onCreate={(newAuthor) => {
-                                    setAuthors((prev) => [...prev, newAuthor]);
-                                    setForm({...form, authorId: newAuthor.id});
-                                }}
-                            />
-                        )}
                     </div>
 
                     <label>Coordinates (required):</label>
@@ -272,13 +322,13 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
                             className="enum"
                             value={form.coordinatesId || ""}
                             onChange={(e) =>
-                                setForm({...form, coordinatesId: e.target.value})
+                                setForm({...form, coordinatesId: e.target.value || null})
                             }
                         >
                             <option value="">Select Coordinates</option>
                             {coordinates.map((c) => (
                                 <option key={c.id} value={c.id}>
-                                    Coordinates ID: {c.id}
+                                    Coordinates ID: {c.id} - x: {c.x}; y: {c.y}
                                 </option>
                             ))}
                         </select>
@@ -291,15 +341,6 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
                         >
                             +
                         </button>
-                        {showCoordinatesModal && (
-                            <CoordinatesCreate
-                                onClose={() => setShowCoordinatesModal(false)}
-                                onCreate={(newCoordinates) => {
-                                    setCoordinates((prev) => [...prev, newCoordinates]);
-                                    setForm({...form, coordinatesId: newCoordinates.id});
-                                }}
-                            />
-                        )}
                     </div>
 
                     <label>Minimal Point (required):</label>
@@ -343,6 +384,28 @@ const LabWorkUpdate = ({ onClose, labWork }) => {
                     </button>
                 </form>
                 )}
+
+            {showDisciplineModal && (
+                <DisciplineCreate
+                    onClose={() => setShowDisciplineModal(false)}
+                    onCreate={handleDisciplineCreated}
+                />
+            )}
+
+            {showAuthorModal && (
+                <PersonCreate
+                    onClose={() => setShowAuthorModal(false)}
+                    onCreate={handleAuthorCreated}
+                />
+            )}
+
+            {showCoordinatesModal && (
+                <CoordinatesCreate
+                    onClose={() => setShowCoordinatesModal(false)}
+                    onCreate={handleCoordinatesCreated}
+                />
+            )}
+
         </div>
     );
 };

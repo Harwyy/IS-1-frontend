@@ -158,7 +158,7 @@ const PersonCreate = ({ onClose }) => {
                         <option value="">Select Location</option>
                         {locations.map((loc) => (
                             <option key={loc.id} value={loc.id}>
-                                Location ID: {loc.id}
+                                Location ID: {loc.id} - {loc.name}
                             </option>
                         ))}
                     </select>

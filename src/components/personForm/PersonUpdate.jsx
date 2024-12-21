@@ -85,7 +85,7 @@ const PersonUpdate = ({ onClose, person }) => {
     const handleLocationCreated = (newLocation) => {
         setLocations((prev) => [...prev, newLocation]);
         setForm((prev) => ({ ...prev, locationId: newLocation.id }));
-        setShowLocationModal(false); // Закрываем модальное окно
+        setShowLocationModal(false);
     };
 
     const validateForm = () => {
@@ -195,7 +195,7 @@ const PersonUpdate = ({ onClose, person }) => {
                             <option value="">Select Location</option>
                             {locations.map((loc) => (
                                 <option key={loc.id} value={loc.id}>
-                                    Location ID: {loc.id}
+                                    Location ID: {loc.id} - {loc.name}
                                 </option>
                             ))}
                         </select>
